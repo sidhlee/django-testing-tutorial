@@ -28,6 +28,7 @@ class Project(models.Model):
         expense_list = Expense.objects.filter(project=self)
         return len(expense_list)
 
+    # This is called when redirect(project) is called inside view
     def get_absolute_url(self):
         return "/" + self.slug
 
@@ -38,6 +39,8 @@ class Category(models.Model):
 
 
 class Expense(models.Model):
+    # related_name updates the name of the accessor from the "One" side
+    # in this case, from "expense_set" to "expenses"
     project = models.ForeignKey(
         Project, on_delete=models.CASCADE, related_name="expenses"
     )

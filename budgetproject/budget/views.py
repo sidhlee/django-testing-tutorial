@@ -28,9 +28,13 @@ def project_detail(request, project_slug):
         )
 
     elif request.method == "POST":
+        # request.POST has a dictionary-like object containing all HTTP POST params
+        # providing that the request contains the form data
         form = ExpenseForm(request.POST)
 
+        # If is_valid returns False, we go back to the form template with the previous values populated.
         if form.is_valid():
+            # When is_valid returns True, we can access validated data in cleaned_data
             title = form.cleaned_data["title"]
             amount = form.cleaned_data["amount"]
             category_name = form.cleaned_data["category"]
@@ -42,9 +46,14 @@ def project_detail(request, project_slug):
             )
 
     elif request.method == "DELETE":
-        id = json.loads(request.body)["id"]
-        expense = Expense.objects.get(id=id)
-        expense.delete()
+        try:
+            # this will raise when id is not passed into client.delete()
+            id = json.loads(request.body)["id"]
+            expense = Expense.objects.get(id=id)
+            expense.delete()
+        except Exception as e:
+            print("[DELETE:project_detail]", e)
+            return HttpResponse(status=404)
 
         return HttpResponse(status=204)
 
