@@ -5,7 +5,7 @@ from django.utils.text import slugify
 class Project(models.Model):
     name = models.CharField(max_length=100)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
-    budget = models.IntegerField()
+    budget: int = models.IntegerField()
 
     def save(self, *args, **kwargs):
         self.slug = slugify(self.name)
@@ -26,7 +26,8 @@ class Project(models.Model):
     @property
     def total_transactions(self):
         expense_list = Expense.objects.filter(project=self)
-        return len(expense_list)
+        # return len(expense_list)
+        return expense_list.count()
 
     # This is called when redirect(project) is called inside view
     def get_absolute_url(self):
